@@ -28,6 +28,8 @@ setTimeout(() => {
 }, 1000)
 
 
+/* Nodejsオンリーな処理 */
+
 process.on('unhandledRejection', 
     (
         err, // Promiseの拒否理由
