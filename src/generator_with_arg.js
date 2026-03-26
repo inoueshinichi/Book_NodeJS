@@ -41,7 +41,7 @@ function* tryCatchGeneratorFunc() {
 }
 
 const tryCatchGenerator = tryCatchGeneratorFunc()
-console.log(tryCatchGenerator.next())
+console.log(tryCatchGenerator.next()) // { value: 1, done: false }
 tryCatchGenerator.throw(new Error("ジェネレータ関数内でエラーを発生させた"))
 tryCatchGenerator.next() // undefined
 
@@ -54,3 +54,19 @@ try {
     console.log('ジェネレータ外部でエラーをキャッチ', err)
 }
 
+
+/* Nodejsオンリーな処理 */
+process.on('unhandledRejection', 
+    (
+        err, // Promiseの拒否理由
+        promise // 放置されたrejectedなPromise
+    ) => {
+        // unhandledRejecction発生の原因を調べられるよう、ログ出力などの対応を行う
+        console.error('unhandledRejection発生', err)
+    }
+)
+process.on('uncaughtException', err => {
+    // プロセス終了前に必要な後片付けやログ出力を行う
+    // process.exit(1)により必ずプロセスをエラー終了させること
+    process.exit(1)
+})

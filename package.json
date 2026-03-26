@@ -2,8 +2,7 @@
   "name": "book_nodejs",
   "version": "1.0.0",
   "description": "",
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/inoueshinichi/Book_NodeJS.git"
@@ -14,5 +13,9 @@
     "url": "https://github.com/inoueshinichi/Book_NodeJS/issues"
   },
   "homepage": "https://github.com/inoueshinichi/Book_NodeJS#readme",
-  "private": true
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "http": "^0.0.1-security"
+  }
 }
