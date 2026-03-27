@@ -41,20 +41,12 @@ const querystring = require('node:querystring')
 const url = require('node:url')
 
 
-const messageEventEmitter = new events.EventEmitter()
-{
-    // ブロック内での変数(listner)の宣言
-    const listener = () => console.log('Hello')
-    messageEventEmitter.on('message', listener)
-}
-console.log(messageEventEmitter.listeners('message')) // EEにリスナが登録されていることの確認(listenerの参照が残っており、GCの対象になっていない)
+// 書き込みストリーム
+const fileWriteStream = fs.createWriteStream('./data/write.txt')
+fileWriteStream.write('Tiny\n', () => console.log('書き込みました'))
+fileWriteStream.write('Tank\n', () => console.log('書き込みました'))
+fileWriteStream.end(() => console.log('WriteStreamを閉じます'))
 
-
-// 11個以上のリスナ登録はGCエラー
-const barEventEmitter = new events.EventEmitter()
-for (let i = 0; i < 11; i++) {
-    barEventEmitter.on('bar', () => console.log("bar"))
-}
 
 
 /* Nodejsオンリーな処理 */
