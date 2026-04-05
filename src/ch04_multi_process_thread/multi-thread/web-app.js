@@ -1,12 +1,11 @@
 'use strict'
 
-const http = require('http')
-const fibonacci = require('./fibonacci')
+const http = require('node:http')
+const workerThreads = require('node:worker_threads')
 
-let reqCount = 0
-
-const server = http.createServer()
-server.on('request', (req, res) => {
+const httpServer = http.createServer()
+httpServer.on('request', (req, res) => {
+    // HTTPリクエストを処理する
     // http://localhost:3000/10へのリクエストはreq.urlでは'/10'になるので、
     // そこから1文字目を取り除いてnを取得する
 
@@ -14,20 +13,23 @@ server.on('request', (req, res) => {
     // console.log('rest', rest)
     // console.log('rest.join()', rest.join(""))
 
-    reqCount++;
     const n = Number(rest.join(""))
-    console.log(`[${reqCount}] n: ${n}`)
+    console.log(`n: ${n}`)
 
     if (Number.isNaN(n)) {
         return res.end()
     }
 
-    const result = fibonacci(n)
-    res.end(result.toString())
-    // res.end()
+    // コンストラクタの第二引数で値を渡しつつ、サブスレッドを生成
+    new workerThreads.Worker(`${__dirname}/fibonacci.js`, {
+        workerData: n
+    }).on('message', result => {
+        console.info(`fibonacci[${n}]-result: ${result.toString()}`)
+        res.end(result.toString())
+    }) // サブスレッドの戻り値をレスポンスとする
 })
 
-server.listen(3000, 'localhost', () => {
+httpServer.listen(3000, 'localhost', () => {
     console.info('サーバを起動しました')
 })
 

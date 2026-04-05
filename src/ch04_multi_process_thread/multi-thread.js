@@ -1,22 +1,20 @@
 'use strict'
 
-const cluster = require('node:cluster')
+// Web標準のWebワーカーをV8エンジンに移植したもの
+
+const workerThreads = require('node:worker_threads')
 const os = require('node:os')
 
-console.log('メインプロセス', process.pid)
+console.info('メインスレッド', workerThreads.threadId)
 
-// CPUコアの数だけプロセスをフォーク
+// CPUコア数分のスレッドを起動
 const cpuCount = os.cpus().length
+console.log('CPU数', cpuCount)
 
-console.log('CPU count / 2', cpuCount/2)
-
-for (let i = 0; i < cpuCount/2; i++) {
-    cluster.setupPrimary({
-        exec: "web-app.js",
-        // silent: true,
-    })
-    const sub = cluster.fork()
-    console.log('サブプロセス', sub.process.pid)
+for (let i = 0; i < cpuCount; i++) {
+    // サブスレッドで実行するファイルのパスを指定してWorkerをnew
+    const worker = new workerThreads.Worker(`${__dirname}/web-app.js`)
+    console.info('サブスレッド', worker.threadId)
 }
 
 
