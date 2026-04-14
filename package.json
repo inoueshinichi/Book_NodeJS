@@ -17,6 +17,8 @@
   "type": "commonjs",
   "main": "index.js",
   "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1",
     "http": "^0.0.1-security"
   }
 }
