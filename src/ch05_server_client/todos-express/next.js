@@ -5,12 +5,6 @@ const cookieParser = require('cookie-parser')
 
 const SERVER_PORT = 3000
 
-// ToDo一覧
-let todos = [
-    { id: 1, title: 'ネーム', completed: false },
-    { id: 2, title: '下書き', completed: true },
-]
-
 const server = express()
 
 // 静的ファイルの公開
@@ -28,6 +22,13 @@ server.use(cookieParser())
 // X-Forwarded-Proto: req.protocol
 // X-Forwarded-For: req.ip, req.ips
 server.enable('trust proxy')
+
+
+// ToDo一覧
+let todos = [
+    { id: 1, title: 'ネーム', completed: false },
+    { id: 2, title: '下書き', completed: true },
+]
 
 
 /* API */
@@ -61,7 +62,6 @@ server.post('/api/todos', (req, res, next) => {
     res.status(201).json(todo)
 })
 
-
 // 包括的エラーハンドリング
 server.use((err, req, res, next) => {
     console.error(err)
@@ -69,7 +69,29 @@ server.use((err, req, res, next) => {
 })
 
 
-server.listen(SERVER_PORT, () => console.log(`ポート番号${SERVER_PORT}でexpressサーバを起動しました.`))
+// Next.jsによるルーティング
+const next = require('next')
+const dev = process.env.NODE_ENV !== 'production'
+const nextApp = next({ dev })
+const handle = nextApp.getRequestHandler() // ハンドラを先に定義しておくのが一般的です
+
+nextApp.prepare().then(() => {
+    // 全てのルート ('*') を Next.js にハンドリングさせる
+    // 修正ポイント: callback関数内で明示的に呼び出す
+    // 修正：文字列 "(.*)" ではなく、正規表現 /.*/ を使用
+    server.all(/.*/, (req, res) => {
+        return handle(req, res)
+    })
+    
+    // サーバーの起動は Next.js の準備が整った後に行うのがベストプラクティスです
+    server.listen(SERVER_PORT, (err) => {
+        if (err) throw err
+        console.log(`ポート番号${SERVER_PORT}でexpress/next.jsサーバを起動しました.`)
+    })
+}).catch((err) => {
+    console.error('Next.jsの起動に失敗しました:', err)
+    process.exit(1)
+})
 
 
 /* Nodejsオンリーな処理 */
