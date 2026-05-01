@@ -6,7 +6,6 @@ const Link = require('next/link')
 const Head = require('next/head')
 // import 'isomorphic-fetch'
 
-
 // 各ページに関する情報の定義
 const pages = {
     index: {title: 'すべてのToDo', fetchQuery: ''},

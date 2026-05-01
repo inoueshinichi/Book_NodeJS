@@ -2,8 +2,8 @@
 const Todos = require('../components/Todos')
 
 
-function Active() {
-    return <Todos page="active" />
+function Index() {
+    return <Todos page='index' />
 }
 
-module.exports = Active
+module.exports = Index

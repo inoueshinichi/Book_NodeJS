@@ -18,6 +18,7 @@
   "main": "index.js",
   "dependencies": {
     "cookie-parser": "^1.4.7",
+    "eventsource": "^4.1.0",
     "express": "^5.2.1",
     "http": "^0.0.1-security",
     "isomorphic-fetch": "^3.0.0",
